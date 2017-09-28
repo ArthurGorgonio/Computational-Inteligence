@@ -1,5 +1,5 @@
 
-## X -> (matrix) Examples
+## X -> (vector) Examples
 ## W -> (vector) Weights
 ## errot -> PerceptronOutput - IdealOutput
 
@@ -36,9 +36,9 @@ random_weights <- function(){
 
 
 # examples Vector, weight Vector, learningRate Float, error Float
-set_weight <- function(x, row, w, learningRate, error){
+set_weight <- function(x, current_row, w, learningRate, error){
   for (i in 1:col) {
-    w[c(i)] <- w[c(i)] + learningRate * error * x[c((row - 1) * col + i)]
+    w[c(i)] <- w[c(i)] + (learningRate * error * x[c((current_row - 1) * col + i)])
   }
   return(w)
 }
@@ -49,17 +49,24 @@ set_weight <- function(x, row, w, learningRate, error){
 ##                    ##
 ########################
 
-active <- function(x, row, w){
+activation <- function(x, current_row, w){
   active <- 0
 
   for(i in 1:col){
-    active <- active + sum(x[c((1 - 1) * col + i)] * w[c(i)])
+    active <- active + sum(x[c((current_row - 1) * col + i)] * w[c(i)])
+    # cat("I: ",i,
+        # "\nAtivado: ", active,
+        # "\ncurrent_row - 1: ",(current_row - 1),
+        # "\n(current_row - 1) * col: ", (current_row - 1) * col,
+        # "\nX[i]: ", x[c((current_row - 1) * col + i)],
+        # "\nW[i]: ", w[c(i)], "\n\n\n")
   }
 
-  if (active > 0)
-    return(1)
-
-  return(0)
+  if (active > 0){
+    return (1)
+  }else{
+    return (0)
+  }
 }
 
 ########################
@@ -70,24 +77,26 @@ active <- function(x, row, w){
 training <- function(data, x, w, error){
   perceptron_output <- c()
   learning <- TRUE
-  while(learning){
-    error <- 0
-    
-    w <- set_weight(x, row, w, learningRate, error)
+  count <- 0
+  while(count <= 10000 && learning){
+    print(count)
+    count <- count + 1
     
     for(i in 1:row){
-      perceptron_output[c(i)] <- active(x, row, w)
+        # cat("Iteração: ",i,"\n\n\n")
+        perceptron_output[c(i)] <- activation(x, i, w)
     }
+
     k <- which(data$class != perceptron_output)
     
-    for(i in k){
-      error <- error
-    }
-    
-    if(error == 0){
+    if(length(k) != 0){
+      error <- data$class[c(k[c(1)])] - perceptron_output[c(k[c(1)])]
+      w <- set_weight(x, k[c(1)], w, learningRate, error)
+    }else{
       learning = FALSE
     }
   }
+  return(w)
 }
 
 ########################
@@ -107,7 +116,7 @@ set_col <- function(data){
 set_row <- function(data){
   return(nrow(data))
 }
-
+#x1 x2 bias
 convert_to_vector <- function(data, row, col){
   for(i in 1:row) {
     for(j in 1:col) {
@@ -117,11 +126,22 @@ convert_to_vector <- function(data, row, col){
   return(x)
 }
 
-data <- archive_read("or.csv")
-row <- set_row(data)
-col <- set_col(data)
-x <- convert_to_vector(data, row, col)
-w <- random_weights()
+main <- function(data, row, col, x, w, error){
+  data <<- archive_read("and.csv")
+  
+  row <<- set_row(data)
+  
+  col <<- set_col(data)
+  
+  x <<- convert_to_vector(data, row, col)
+  
+  w <<- random_weights()
+  
+  w <<- training(data, x, w, error)
+}
 
+create_variables <- function(){
+  
+}
 
-training(data,x, w, error)
+main(data, row, col, x, w, error)
