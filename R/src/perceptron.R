@@ -1,10 +1,20 @@
 
-## X -> (vector) Examples
+## X -> (vector) Examperceptronles
 ## W -> (vector) Weights
-## errot -> PerceptronOutput - IdealOutput
+## errot -> perceptronerceperceptrontronOutperceptronut - IdealOutperceptronut
 
-# Seting to project directory 
-# setwd("~/Projects/Computational-Inteligence/R/")
+# Seting to perceptronroject directory
+setwd("~/Projects/Computational-Inteligence/R/src")
+
+########################
+##                    ##
+##   Class Settings   ##
+##                    ##
+########################
+#class name = perceptron, attributes X,W
+perceptron <- c()
+setClass("perceptron", slots = list(x="vector", w="vector"))
+perceptron <- new("perceptron", x=c(1,2), w=c(1,2))
 
 ########################
 ##                    ##
@@ -18,11 +28,11 @@ data <- c()
 col <- c()
 row <- c()
 
-#vectors for weight and the examples
-w <- c()
-x <- c()
+# #vectors for weight and the examples
+# w <- c()
+# x <- c()
 
-
+file <- c()
 error <- 0
 learningRate <- 0.1
 ########################
@@ -36,11 +46,11 @@ random_weights <- function(){
 
 
 # examples Vector, weight Vector, learningRate Float, error Float
-set_weight <- function(x, current_row, w, learningRate, error){
+set_weight <- function(perceptron, current_row, learningRate, error){
   for (i in 1:col) {
-    w[c(i)] <- w[c(i)] + (learningRate * error * x[c((current_row - 1) * col + i)])
+    perceptron@w[c(i)] <- perceptron@w[c(i)] + (learningRate * error * perceptron@x[c((current_row - 1) * col + i)])
   }
-  return(w)
+  return(perceptron@w)
 }
 
 ########################
@@ -49,11 +59,11 @@ set_weight <- function(x, current_row, w, learningRate, error){
 ##                    ##
 ########################
 
-activation <- function(x, current_row, w){
+activation <- function(perceptron, current_row){
   active <- 0
 
   for(i in 1:col){
-    active <- active + sum(x[c((current_row - 1) * col + i)] * w[c(i)])
+    active <- active + sum(perceptron@x[c((current_row - 1) * col + i)] * perceptron@w[c(i)])
   }
 
   if (active > 0){
@@ -68,28 +78,28 @@ activation <- function(x, current_row, w){
 ##  Training Funtion  ##
 ##                    ##
 ########################
-training <- function(data, x, w, error){
+training <- function(data, p, error){
   perceptron_output <- c()
   learning <- TRUE
   count <- 0
-  while(count <= 10000 && learning){
-    print(count)
+  while(count < 10000 && learning){
     count <- count + 1
-    
+    print(count)
+
     for(i in 1:row){
-      perceptron_output[c(i)] <- activation(x, i, w)
+      perceptron_output[c(i)] <- activation(perceptron, i)
     }
 
     k <- which(data$class != perceptron_output)
-    
+
     if(length(k) != 0){
       error <- data$class[c(k[c(1)])] - perceptron_output[c(k[c(1)])]
-      w <- set_weight(x, k[c(1)], w, learningRate, error)
+      perceptron@w <- set_weight(perceptron, k[c(1)], learningRate, error)
     }else{
       learning = FALSE
     }
   }
-  return(w)
+  return(perceptron@w)
 }
 
 ########################
@@ -98,9 +108,9 @@ training <- function(data, x, w, error){
 ##                    ##
 ########################
 archive_read <- function(file){
-  setwd("csv/")
+  setwd("../csv/")
   data <- read.csv(file)
-  setwd("../")
+  setwd("../src")
   return(data)
 }
 
@@ -115,28 +125,47 @@ set_row <- function(data){
 convert_to_vector <- function(data, row, col){
   for(i in 1:row) {
     for(j in 1:col) {
-      x[c(((i - 1) * col) + j)] <- data[i, j]
+      perceptron@x[c(((i - 1) * col) + j)] <- data[i, j]
     }
   }
-  return(x)
+  return(perceptron@x)
 }
 
-archive_name <- function(file){
-  
+
+archive_name <- function(){
+  cat("or \nand \nimplies \nnumbers")
+  switch(readline(),
+    or={
+      file <- "or.csv"
+    },
+    and={
+      file <- "and.csv"
+    },
+    implies={
+      file <- "implies.csv"
+    },
+    numbers={
+      file <- "numbers/one.csv"
+    },
+    stop("Enter something that switches me!")
+  )
+  return(file)
 }
 
-main <- function(data, row, col, x, w, error){
-  data <<- archive_read("implies.csv")
+main <- function(data, row, col, perceptron, error){
+  file <<- archive_name()
   
+  data <<- archive_read(file)
+
   row <<- set_row(data)
-  
+
   col <<- set_col(data)
-  
-  x <<- convert_to_vector(data, row, col)
-  
-  w <<- random_weights()
-  
-  w <<- training(data, x, w, error)
+
+  perceptron@x <<- convert_to_vector(data, row, col)
+
+  perceptron@w <<- random_weights()
+
+  w <<- training(data, perceptron, error)
 }
 
-main(data, row, col, x, w, error)
+main(data, row, col, perceptron, error)
