@@ -1,9 +1,9 @@
 
 ## X -> (vector) Examperceptronles
 ## W -> (vector) Weights
-## errot -> perceptronerceperceptrontronOutperceptronut - IdealOutperceptronut
+## error -> perceptronOutput - IdealOutperceptronut
 
-# Seting to perceptronroject directory
+# Seting to code directory
 setwd("~/Projects/Computational-Inteligence/R/src")
 
 ########################
@@ -13,8 +13,15 @@ setwd("~/Projects/Computational-Inteligence/R/src")
 ########################
 #class name = perceptron, attributes X,W
 perceptron <- c()
+
 setClass("perceptron", slots = list(x="vector", w="vector"))
-perceptron <- new("perceptron", x=c(1,2), w=c(1,2))
+perceptron <- new("perceptron", x=c(1), w=c(1))
+
+network <- list()
+
+for(i in 1:2){
+  v[[i]] <- perceptron
+}
 
 ########################
 ##                    ##
@@ -108,14 +115,18 @@ training <- function(data, p, error){
 ##                    ##
 ########################
 archive_read <- function(file){
-  setwd("../csv/")
+  setwd("~/Projects/Computational-Inteligence/R/csv")
+  
+  k <- list.files(pattern="*.csv") 
+  k[1]
+  data <- read.csv("numbers/1.csv")
   data <- read.csv(file)
-  setwd("../src")
+  setwd("~/Projects/Computational-Inteligence/R/src")
   return(data)
 }
 
 set_col <- function(data){
-  return(ncol(data) - 1)
+  return(ncol(data))
 }
 
 set_row <- function(data){
@@ -124,8 +135,9 @@ set_row <- function(data){
 #x1 x2 bias
 convert_to_vector <- function(data, row, col){
   for(i in 1:row) {
-    for(j in 1:col) {
-      perceptron@x[c(((i - 1) * col) + j)] <- data[i, j]
+    perceptron@x[c(((i - 1) * col) + 1)] <- 1 #bias
+    for(j in 2:col) {
+      perceptron@x[c(((i - 1) * col) + j)] <- data[i, j-1] #number of csv
     }
   }
   return(perceptron@x)
@@ -133,19 +145,52 @@ convert_to_vector <- function(data, row, col){
 
 
 archive_name <- function(){
-  cat("or \nand \nimplies \nnumbers")
+  cat("Input a number between 1-4!\n1 - or \n2 - and \n3 - implies \n4 - numbers")
   switch(readline(),
-    or={
+    "1"={
       file <- "or.csv"
     },
-    and={
+    "2"={
       file <- "and.csv"
     },
-    implies={
+    "3"={
       file <- "implies.csv"
     },
-    numbers={
-      file <- "numbers/one.csv"
+    "4"={
+      cat("Input a digit between 0-9! (e.g. 1)")
+      switch (readline(),
+        "0"={
+          file <- "numbers/0.csv"
+        },
+        "1"={
+          file <- "numbers/1.csv"
+        },
+        "2"={
+          file <- "numbers/2.csv"
+        },
+        "3"={
+          file <- "numbers/3.csv"
+        },
+        "4"={
+          file <- "numbers/4.csv"
+        },
+        "5"={
+          file <- "numbers/5.csv"
+        },
+        "6"={
+          file <- "numbers/6.csv"
+        },
+        "7"={
+          file <- "numbers/7.csv"
+        },
+        "8"={
+          file <- "numbers/8.csv"
+        },
+        "9"={
+          file <- "numbers/9.csv"
+        },
+        stop("You do not write a valid digit!")
+      )
     },
     stop("Enter something that switches me!")
   )
