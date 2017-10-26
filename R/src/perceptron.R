@@ -17,12 +17,6 @@ perceptron <- c()
 setClass("perceptron", slots = list(x="vector", w="vector"))
 perceptron <- new("perceptron", x=c(1), w=c(1))
 
-network <- list()
-
-for(i in 1:2){
-  v[[i]] <- perceptron
-}
-
 ########################
 ##                    ##
 ##   Global Settings  ##
@@ -91,8 +85,6 @@ training <- function(data, p, error){
   count <- 0
   while(count < 10000 && learning){
     count <- count + 1
-    print(count)
-
     for(i in 1:row){
       perceptron_output[c(i)] <- activation(perceptron, i)
     }
@@ -106,6 +98,7 @@ training <- function(data, p, error){
       learning = FALSE
     }
   }
+  cat("Epochs: ", count, "\n")
   return(perceptron@w)
 }
 
@@ -115,13 +108,8 @@ training <- function(data, p, error){
 ##                    ##
 ########################
 archive_read <- function(file){
-  setwd("~/Projects/Computational-Inteligence/R/csv")
-  
-  k <- list.files(pattern="*.csv") 
-  k[1]
-  data <- read.csv("numbers/1.csv")
   data <- read.csv(file)
-  setwd("~/Projects/Computational-Inteligence/R/src")
+  # setwd("~/Projects/Computational-Inteligence/R/src")
   return(data)
 }
 
@@ -143,74 +131,35 @@ convert_to_vector <- function(data, row, col){
   return(perceptron@x)
 }
 
-
+# the archives that will be read in perceptron
 archive_name <- function(){
-  cat("Input a number between 1-4!\n1 - or \n2 - and \n3 - implies \n4 - numbers")
+  
+  cat("Input a number between 1-2!\n1 - logical ports \n2 - numbers")
   switch(readline(),
     "1"={
-      file <- "or.csv"
+      setwd("~/Projects/Computational-Inteligence/R/csv")
+      file <- list.files(pattern="*.csv")
     },
     "2"={
-      file <- "and.csv"
+      setwd("~/Projects/Computational-Inteligence/R/csv/numbers")
+      file <- list.files(pattern="*.csv")
     },
-    "3"={
-      file <- "implies.csv"
-    },
-    "4"={
-      cat("Input a digit between 0-9! (e.g. 1)")
-      switch (readline(),
-        "0"={
-          file <- "numbers/0.csv"
-        },
-        "1"={
-          file <- "numbers/1.csv"
-        },
-        "2"={
-          file <- "numbers/2.csv"
-        },
-        "3"={
-          file <- "numbers/3.csv"
-        },
-        "4"={
-          file <- "numbers/4.csv"
-        },
-        "5"={
-          file <- "numbers/5.csv"
-        },
-        "6"={
-          file <- "numbers/6.csv"
-        },
-        "7"={
-          file <- "numbers/7.csv"
-        },
-        "8"={
-          file <- "numbers/8.csv"
-        },
-        "9"={
-          file <- "numbers/9.csv"
-        },
-        stop("You do not write a valid digit!")
-      )
-    },
-    stop("Enter something that switches me!")
+    stop("You do not write a valid digit!")
   )
   return(file)
 }
 
 main <- function(data, row, col, perceptron, error){
   file <<- archive_name()
-  
-  data <<- archive_read(file)
-
-  row <<- set_row(data)
-
-  col <<- set_col(data)
-
-  perceptron@x <<- convert_to_vector(data, row, col)
-
-  perceptron@w <<- random_weights()
-
-  w <<- training(data, perceptron, error)
+  for(i in 1:length(file)){
+    data <<- archive_read(file[c(i)])
+    row <<- set_row(data)
+    col <<- set_col(data)
+    perceptron@x <<- convert_to_vector(data, row, col)
+    perceptron@w <<- random_weights()
+    w <<- training(data, perceptron, error)
+    write.csv(w, paste("~/Projects/Computational-Inteligence/R/weights/", file[c(i)], sep = "", collapse = ""), row.names = TRUE)
+  }
 }
 
 main(data, row, col, perceptron, error)

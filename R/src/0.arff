@@ -1,0 +1,51 @@
+@relation 0
+
+@attribute bias numeric
+@attribute x1 numeric
+@attribute x2 numeric
+@attribute x3 numeric
+@attribute x4 numeric
+@attribute x5 numeric
+@attribute x6 numeric
+@attribute x7 numeric
+@attribute x8 numeric
+@attribute x9 numeric
+@attribute x10 numeric
+@attribute x11 numeric
+@attribute x12 numeric
+@attribute x13 numeric
+@attribute x14 numeric
+@attribute x15 numeric
+@attribute x16 numeric
+@attribute x17 numeric
+@attribute x18 numeric
+@attribute x19 numeric
+@attribute x20 numeric
+@attribute x21 numeric
+@attribute x22 numeric
+@attribute x23 numeric
+@attribute x24 numeric
+@attribute x25 numeric
+@attribute x26 numeric
+@attribute x27 numeric
+@attribute x28 numeric
+@attribute x29 numeric
+@attribute x30 numeric
+@attribute x31 numeric
+@attribute x32 numeric
+@attribute x33 numeric
+@attribute x34 numeric
+@attribute x35 numeric
+@attribute out numeric
+
+@data
+1,0,1,1,1,0,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,0,1,1,1,0,0
+1,0,1,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,1,1,1,1,1,1
+1,0,1,1,1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1,1,1,1,1,2
+1,0,1,1,1,0,1,0,0,0,1,0,0,0,0,1,0,0,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,1,1,0,3
+1,0,0,1,1,0,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,1,1,1,1,0,0,0,1,0,0,0,0,1,0,4
+1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,0,1,0,0,0,0,1,1,0,0,0,1,0,1,1,1,0,5
+1,0,0,1,1,1,0,1,0,0,0,1,1,1,1,0,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,0,1,1,1,0,6
+1,1,1,1,1,1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,7
+1,0,1,1,1,0,1,0,0,0,1,1,0,0,0,1,0,1,1,1,0,1,0,0,0,1,1,0,0,0,1,0,1,1,1,0,8
+1,0,1,1,1,0,1,0,0,0,1,1,0,0,0,1,0,1,1,1,1,0,0,0,0,1,0,0,0,1,0,0,1,1,0,0,9
