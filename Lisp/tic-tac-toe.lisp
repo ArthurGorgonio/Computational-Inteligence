@@ -133,7 +133,7 @@
     (loop
       (setq row (random 3))
       (setq col (random 3))
-      (when (valid-move row col)
+      (when (valid-turn row col)
         (return (cons row col))
       )
     )

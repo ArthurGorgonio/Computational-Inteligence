@@ -1,8 +1,3 @@
-
-## X -> (vector) Examperceptronles
-## W -> (vector) Weights
-## error -> perceptronOutput - IdealOutperceptronut
-
 # Seting to code directory
 setwd("~/Projects/Computational-Inteligence/R/src")
 
@@ -12,27 +7,18 @@ setwd("~/Projects/Computational-Inteligence/R/src")
 ##                    ##
 ########################
 #class name = perceptron, attributes X,W
-perceptron <- c()
 
 setClass("perceptron", slots = list(x="vector", w="vector"))
 perceptron <- new("perceptron", x=c(1), w=c(1))
 
 ########################
 ##                    ##
-##   Global Settings  ##
+##  Global Variables  ##
 ##                    ##
 ########################
-# archive to learning
 data <- c()
-
-# not mutable variables
-col <- c()
 row <- c()
-
-# #vectors for weight and the examples
-# w <- c()
-# x <- c()
-
+col <- c()
 file <- c()
 error <- 0
 learningRate <- 0.1
@@ -44,7 +30,6 @@ learningRate <- 0.1
 random_weights <- function(){
   return(runif(col,-1,1))
 }
-
 
 # examples Vector, weight Vector, learningRate Float, error Float
 set_weight <- function(perceptron, current_row, learningRate, error){
@@ -62,11 +47,9 @@ set_weight <- function(perceptron, current_row, learningRate, error){
 
 activation <- function(perceptron, current_row){
   active <- 0
-
   for(i in 1:col){
     active <- active + sum(perceptron@x[c((current_row - 1) * col + i)] * perceptron@w[c(i)])
   }
-
   if (active > 0){
     return (1)
   }else{
@@ -83,19 +66,34 @@ training <- function(data, p, error){
   perceptron_output <- c()
   learning <- TRUE
   count <- 0
+  iterationWrong <- data.frame(
+    iteration = c(),
+    absolute = c(),
+    stringsAsFactors = FALSE
+  )
   while(count < 10000 && learning){
+    absoluteError <- 0
     count <- count + 1
     for(i in 1:row){
       perceptron_output[c(i)] <- activation(perceptron, i)
     }
-
     k <- which(data$class != perceptron_output)
-
     if(length(k) != 0){
       error <- data$class[c(k[c(1)])] - perceptron_output[c(k[c(1)])]
       perceptron@w <- set_weight(perceptron, k[c(1)], learningRate, error)
     }else{
       learning = FALSE
+    }
+    for(l in 1:length(k)){
+      error <- data$class[c(k[c(l)])] - perceptron_output[c(k[c(l)])]
+      absoluteError <- absoluteError + abs(error)
+      print(k[c(l)])
+    }
+    
+    if(count == 1){
+      plot(aa, type = "o", col = collor[c(i)], xlab = "Iteration", ylab = "error", main = "Learning")
+    }else{
+      lines(aa, type = "o", col = collor[c(i)])
     }
   }
   cat("Epochs: ", count, "\n")
@@ -104,9 +102,10 @@ training <- function(data, p, error){
 
 ########################
 ##                    ##
-##    Read Funtion    ##
+##   Read Funtions    ##
 ##                    ##
 ########################
+
 archive_read <- function(file){
   data <- read.csv(file)
   # setwd("~/Projects/Computational-Inteligence/R/src")
@@ -149,6 +148,8 @@ archive_name <- function(){
   return(file)
 }
 
+collor <- c("red", "blue", "black", "yellow", "green", "purple", "pink", "orange", "gray", "brown")
+
 main <- function(data, row, col, perceptron, error){
   file <<- archive_name()
   for(i in 1:length(file)){
@@ -159,6 +160,7 @@ main <- function(data, row, col, perceptron, error){
     perceptron@w <<- random_weights()
     w <<- training(data, perceptron, error)
     write.csv(w, paste("~/Projects/Computational-Inteligence/R/weights/", file[c(i)], sep = "", collapse = ""), row.names = TRUE)
+2
   }
 }
 
