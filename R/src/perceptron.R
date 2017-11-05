@@ -7,7 +7,6 @@ setwd("~/Projects/Computational-Inteligence/R/src")
 ##                    ##
 ########################
 #class name = perceptron, attributes X,W
-
 setClass("perceptron", slots = list(x="vector", w="vector"))
 perceptron <- new("perceptron", x=c(1), w=c(1))
 
@@ -22,6 +21,9 @@ col <- c()
 file <- c()
 error <- 0
 learningRate <- 0.1
+iterationWrong <- c()
+color <- c("red", "green", "blue", "black", "yellow", "purple", "pink", "orange", "gray", "brown")
+
 ########################
 ##                    ##
 ##   Weight Funtion   ##
@@ -44,7 +46,6 @@ set_weight <- function(perceptron, current_row, learningRate, error){
 ##   Active Funtion   ##
 ##                    ##
 ########################
-
 activation <- function(perceptron, current_row){
   active <- 0
   for(i in 1:col){
@@ -66,11 +67,6 @@ training <- function(data, p, error){
   perceptron_output <- c()
   learning <- TRUE
   count <- 0
-  iterationWrong <- data.frame(
-    iteration = c(),
-    absolute = c(),
-    stringsAsFactors = FALSE
-  )
   while(count < 10000 && learning){
     absoluteError <- 0
     count <- count + 1
@@ -78,23 +74,17 @@ training <- function(data, p, error){
       perceptron_output[c(i)] <- activation(perceptron, i)
     }
     k <- which(data$class != perceptron_output)
-    if(length(k) != 0){
+    if(length(k) == 0){
+      learning = FALSE
+    }else{
       error <- data$class[c(k[c(1)])] - perceptron_output[c(k[c(1)])]
       perceptron@w <- set_weight(perceptron, k[c(1)], learningRate, error)
-    }else{
-      learning = FALSE
+      for(l in 1:length(k)){
+        error <- data$class[c(k[c(l)])] - perceptron_output[c(k[c(l)])]
+        absoluteError <- absoluteError + abs(error)
+      }
     }
-    for(l in 1:length(k)){
-      error <- data$class[c(k[c(l)])] - perceptron_output[c(k[c(l)])]
-      absoluteError <- absoluteError + abs(error)
-      print(k[c(l)])
-    }
-    
-    if(count == 1){
-      plot(aa, type = "o", col = collor[c(i)], xlab = "Iteration", ylab = "error", main = "Learning")
-    }else{
-      lines(aa, type = "o", col = collor[c(i)])
-    }
+      iterationWrong[c(count)] <<- absoluteError
   }
   cat("Epochs: ", count, "\n")
   return(perceptron@w)
@@ -105,7 +95,6 @@ training <- function(data, p, error){
 ##   Read Funtions    ##
 ##                    ##
 ########################
-
 archive_read <- function(file){
   data <- read.csv(file)
   # setwd("~/Projects/Computational-Inteligence/R/src")
@@ -132,15 +121,14 @@ convert_to_vector <- function(data, row, col){
 
 # the archives that will be read in perceptron
 archive_name <- function(){
-  
   cat("Input a number between 1-2!\n1 - logical ports \n2 - numbers")
   switch(readline(),
     "1"={
-      setwd("~/Projects/Computational-Inteligence/R/csv")
+      setwd("~/Projects/Computational-Inteligence/R/data")
       file <- list.files(pattern="*.csv")
     },
     "2"={
-      setwd("~/Projects/Computational-Inteligence/R/csv/numbers")
+      setwd("~/Projects/Computational-Inteligence/R/data/numbers")
       file <- list.files(pattern="*.csv")
     },
     stop("You do not write a valid digit!")
@@ -148,11 +136,14 @@ archive_name <- function(){
   return(file)
 }
 
-collor <- c("red", "blue", "black", "yellow", "green", "purple", "pink", "orange", "gray", "brown")
+m <- c(1,2,3,4,5,6,7,8,9,0)
 
 main <- function(data, row, col, perceptron, error){
   file <<- archive_name()
+  pch_a <- 22
+  lty_a <- 2
   for(i in 1:length(file)){
+    iterationWrong <<- c()
     data <<- archive_read(file[c(i)])
     row <<- set_row(data)
     col <<- set_col(data)
@@ -160,8 +151,21 @@ main <- function(data, row, col, perceptron, error){
     perceptron@w <<- random_weights()
     w <<- training(data, perceptron, error)
     write.csv(w, paste("~/Projects/Computational-Inteligence/R/weights/", file[c(i)], sep = "", collapse = ""), row.names = TRUE)
-2
+    plot(iterationWrong, type = "l", col = color[c(i)], ylab = "Error", main = file[c(i)], axes = FALSE)
+    # if(i == 1){
+    #   plot(iterationWrong, type = "o", col = color[c(i)], xlab = "Iteration", ylab = "Error", main = file[c(i)], axes = FALSE)
+    # }else{
+    #   lines(iterationWrong, type = "o", col = color[c(i)], pch = pch_a, lty = lty_a)
+    #   pch_a <- pch_a + 1
+    #   lty_a <- lty_a + 1
+    # }
+    axis(1, las=1, at=2*0:length(iterationWrong))
+    axis(2, las=1, at=1*0:max(iterationWrong))
+    box()
   }
+    # legend("topright", c("Mon"), cex = 0.6, bty = "n", fill = rainbow(2))
+    # legend(1, names("alfa", "beta", "gamma"), cex=0.8, col=plot_colors, pch = 21:pch_a, lty = 1:lty_a)
+    # dev.off()
 }
 
 main(data, row, col, perceptron, error)
