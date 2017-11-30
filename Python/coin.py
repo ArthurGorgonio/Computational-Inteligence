@@ -26,7 +26,7 @@ def save_dict(value, file_name):
 
 def main():
     alfa = 0.01
-    p = 0.5
+    p = 0.4
     value = new_dict()
     count = 0
     try:
@@ -34,12 +34,13 @@ def main():
             for state in range(1,100):
                 new_state = rand_play(state, p)
                 aux = value[new_state] - value[state]
-                value[state] = value[state] + (alfa * abs(aux))
+                value[state] = value[state] + (alfa * aux)
             count += 1
     except:
         #save_dict(value, "bet")
         print()
         print(value.items())
+        print()
         print(count)
 
 main()
