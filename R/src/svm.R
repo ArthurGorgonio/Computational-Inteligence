@@ -1,43 +1,49 @@
 library("e1071")
+library("rminer")
 setwd("~/Projects/Computational-Inteligence/R")
 
 archive <- read.csv("data/numbers/numbers2.csv")
-test <- read.csv("data/numbers/numbers.csv")
+# test <- read.csv("data/numbers/numbers.csv")
 # row <- 1:nrow(archive)
-attach(archive)
-attach(test)
 
-model <- svm(Number ~ ., data = archive)
+#model <- svm(Number ~ ., data = archive)
+
+#split
+H <- holdout(archive$Number, ratio = 0.75, mode="stratified") 
+training <- archive[H$tr,] 
+test <- archive[H$ts,]
 
 # alternatively the traditional interface:
-x <- subset(archive, select = -Number)
-y <- Number
-model <- svm(x, y, type = "C-classification", kernel = "sigmoid") 
+xTraining <- subset(training, select = -Number)
+yTraining <- subset(training, select = Number)
+
+xTest <- subset(test, select = -Number)
+yTest <- subset(test, select = Number)
+
+model <- svm(xTraining, yTraining, type = "C-classification", kernel = "radial") 
 
 print(model)
 summary(model)
 
 # test with train data
-inputTest <- subset(test, select = -Number)
-inputClass <- Number
-
-pred <- predict(model, inputTest)
-
-print(pred)
-summary(pred)
-# (same as:)
-pred <- fitted(model)
+pred <- predict(model, xTest)
 
 # Check accuracy:
-table(pred, inputClass)
+matrix <- table(pred, yTest)
+summary(pred)
+
+plot(model$labels, summary(pred), xlim = c(0,10), xlab = "Numbers", ylab = "Classifications")
+
+#accuracy
+acc <- ((sum(diag(matrix)) / sum(matrix)) * 100)
 
 #col
 col <- ncol(archive)
 col <- col - 1
 
 # compute decision values and probabilities:
-pred <- predict(model, x, decision.values = TRUE)
-attr(pred, "decision.values")[1:col]
+# pred <- predict(model, x, decision.values = TRUE)
+# attr(pred, "decision.values")[1:col]
 
 # visualize (classes by color, SV by crosses):
 
