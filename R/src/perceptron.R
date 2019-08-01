@@ -23,7 +23,7 @@ error <- 0
 learningRate <- 0.1
 iterationWrong <- c()
 color <- c("red", "green", "blue", "black", "yellow", "purple", "pink", "orange", "gray", "brown")
-
+name <- c()
 ########################
 ##                    ##
 ##   Weight Funtion   ##
@@ -126,10 +126,12 @@ archive_name <- function(){
     "1"={
       setwd("~/Projects/Computational-Inteligence/R/data")
       file <- list.files(pattern="*.csv")
+      name <<- c("and", "implies", "or")
     },
     "2"={
       setwd("~/Projects/Computational-Inteligence/R/data/numbers")
       file <- list.files(pattern="*.csv")
+      name <<- c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
     },
     stop("You do not write a valid digit!")
   )
@@ -151,7 +153,7 @@ main <- function(data, row, col, perceptron, error){
     perceptron@w <<- random_weights()
     w <<- training(data, perceptron, error)
     write.csv(w, paste("~/Projects/Computational-Inteligence/R/weights/", file[c(i)], sep = "", collapse = ""), row.names = TRUE)
-    plot(iterationWrong, type = "l", col = color[c(i)], ylab = "Error", main = file[c(i)], axes = FALSE)
+    plot(iterationWrong, type = "l", col = color[c(i)], xlab = "Iterations", ylab = "Error", main = name[i], axes = FALSE)
     # if(i == 1){
     #   plot(iterationWrong, type = "o", col = color[c(i)], xlab = "Iteration", ylab = "Error", main = file[c(i)], axes = FALSE)
     # }else{

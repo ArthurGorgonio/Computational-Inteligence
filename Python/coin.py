@@ -16,18 +16,26 @@ def rand_play(state, p):
         s = state - action
     return s
 
-def save_dict(value, file_name):
+def save_values(value):
+    save = open('values.csv', 'w')
+    content = []
+    for k, v in value.items():
+        content.append(str(k) + ',' + str(v) + '\n')
+    save.writelines(content)
+    save.close()
+
+def read_values(value):
     try:
-        file = open(file_name, "w")
-        file.write(value.items())
-        file.close()
-    except IOError:
-        print("The file can not be open", file_name)
+        save = open('values.csv', 'r')
+        lines = save.readlines()
+        print(...)
+    except:
+        return initialize()
 
 def main():
     alfa = 0.01
     p = 0.4
-    value = new_dict()
+    value = read_values(value)
     count = 0
     try:
         while(True):
